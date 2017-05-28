@@ -25,7 +25,7 @@
 #define VOLUME 1.0e-14      // [cm^3] System volume.
 #define TEMPERATURE 1073.0  // [K] System temperature.
 #define CHANNELS 2          // Irradiation channels used (1:W, 2:He, 3:H,...).
-#define EXP10 3.0           // Number of significant figures per key field.
+#define EXP10 4.0           // Number of significant figures per key field.
 
 // Running time pars:
 #define PSTEPS     1000000  // Print data every so many.
