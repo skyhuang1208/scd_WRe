@@ -267,8 +267,12 @@ main(int argc, char *argv[])
                 ++aaaa;
             }
 			int64 k2 = reaction->object == NULL ? 0 : reaction->object->key;
-			struct TempMaterial* newMaterialList = process_event(event_object, k2, cIndex);
-			int count = 0;
+
+			struct TempMaterial* newMaterialList;                                                     // SKY
+			if(i_step%PSTEPS==0) newMaterialList = process_event(event_object, k2, cIndex, adv_time); // SKY: add advtime
+            else                 newMaterialList = process_event(event_object, k2, cIndex, -1.0);     // SKY: dont print
+			
+            int count = 0;
 			struct TempMaterial* newMaterial;
 			for (newMaterial = newMaterialList; newMaterial != NULL; newMaterial = newMaterial->next)
 			{

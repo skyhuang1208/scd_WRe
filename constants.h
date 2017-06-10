@@ -22,7 +22,7 @@
 #define TDE 90              // [eV] Threshold displacement energy for W.
 
 // Run parameters:
-#define VOLUME 1.0e-14      // [cm^3] System volume.
+#define VOLUME 1.0e-15      // [cm^3] System volume.
 #define TEMPERATURE 1073.0  // [K] System temperature.
 #define CHANNELS 2          // Irradiation channels used (1:W, 2:He, 3:H,...).
 #define EXP10 4.0           // Number of significant figures per key field.
@@ -42,6 +42,8 @@
 
 #define RATIO_HE 0.0        // [appm/dpa] He-to-dpa ratio.  !!!<OFF>!!!
 #define RATIO_H 0           //                              !!!<OFF>!!!
+
+#define TRACK          // output Re contribution to "trackRE.out"
 
 // Auxiliary definitions: 
 /* #define RESTART            // Do restart. */

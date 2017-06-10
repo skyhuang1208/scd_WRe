@@ -81,7 +81,8 @@ extern double *compute_rates_objects (const struct object_t *all,
 /*modified!*/
 extern struct TempMaterial* process_event(struct object_t *my_object,
                                           int64            k2,
-                                          int              n2);
+                                          int              n2,
+                                          double           adv_time); // SKY: use for TRACK_RE
 
 extern void compute_sinks (double *s);
 

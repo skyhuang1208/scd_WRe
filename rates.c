@@ -5,6 +5,8 @@
 #include "constants.h"
 #include "rvgs.h"
 #include "RateMatrix.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 
 #define AVG_ION_EN 1.71e+6 // (from TRIM) Average ion energy (in eV) expended on damage from 5MeV Cu.
@@ -13,6 +15,14 @@
 /**
  * Obtain sign of an integer:
  */
+
+////////// SKY: try to print def gen //////////
+int64 inout_Ndeftotal(int n){
+    static int64 Ndeftotal= 0;
+    Ndeftotal +=n;
+    return Ndeftotal;
+}
+////////// SKY                       //////////
 
 inline int signof (int64 a) { return (a < 0) ? -1 : 1; }
 
@@ -209,7 +219,8 @@ double *compute_rates_objects (const struct object_t *all,
 /*process_event modified!!!  modifying*/
 struct TempMaterial* process_event(struct object_t *my_object,
                                    int64            k2,
-                                   int              n2) {
+                                   int              n2,
+                                   double           adv_time){ // SKY: use for TRACK
 
     int64 mono_key = 0;
     int64 cluster_key = 0;
@@ -224,6 +235,12 @@ struct TempMaterial* process_event(struct object_t *my_object,
 
     static int64 nEmission= 0; // SKY
     static int64 nReaction= 0; // SKY
+
+    ////////// SKY: count Re increment (via Re(V) or mixed-itl) //////////
+    static int64 nReALL= 0; // reaction of mixed-itl + Re
+    static int64 nReVCC= 0; // reaction with Re
+    static int64 nReMIX= 0; // reaction with mixed-itl
+    ////////// SKY: count Re increment (via Re(V) or mixed-itl) //////////
 
     if (n2 == 0) {
         //////////  Absorption of object at sink. //////////
@@ -301,6 +318,30 @@ struct TempMaterial* process_event(struct object_t *my_object,
 
         other_object = find_object_hash(k2);
         /* I now have both reactants. */
+
+////////// SKY: track Re increment, def generated //////////
+#ifdef TRACK
+        if(LEVELS != 2){
+            printf("Error: the track_re code only implemented for LEVELS==2\n");
+            exit(1);
+        }
+        const int64 divider= (int64) pow(10.0, (double) EXP10);
+        const int64 keyMIX= (int64) pow(10.0, (double) EXP10) +1;
+        const int64 keyRE=  1;
+        if(my_object->key % divider == 0 || other_object->key % divider == 0){}
+        else if((my_object->key== keyMIX && other_object->key == keyRE) ||
+                (my_object->key== keyRE  && other_object->key == keyMIX)) nReALL ++; // reaction of mixed+Re
+        else if(my_object->key == keyMIX || other_object->key == keyMIX) nReMIX ++; // transport by SIA 
+        else if(my_object->key == keyRE  || other_object->key == keyRE)  nReVCC ++; // transport by VCC 
+
+        if(adv_time >0){ // output
+            FILE *fp = fopen("track.out", "at+");
+            int64 Ndeftotal= inout_Ndeftotal(0);
+            fprintf(fp, "%e %lld %lld %lld %lld\n", adv_time, Ndeftotal, nReALL, nReMIX, nReVCC);
+            fflush(fp); // format: time, N_tot_def_inserted, N_Re_added[MIX+Re, by_SIA, by_VCC]
+        }
+#endif
+////////// SKY: track Re increment, def generated //////////
 
         for (i = 0; i<LEVELS; i++) {
             att[i] = my_object->attributes[i] + other_object->attributes[i];
@@ -1220,6 +1261,9 @@ int **generate_pka_damage (double energy,
   // SKY: JNM 462 (2015) 329
   n = (energy< (341.42*128.0)) ? rint(0.4172*pow(energy/128.0,0.74)): rint(0.0126*pow(energy/128.0,1.34));
   if(n<1) n=1;
+#ifdef TRACK
+  inout_Ndeftotal(n);
+#endif
   // SKY: Ed= 128 eV in the paper
 
   // Dynamically allocate first dimension of pointer array:
