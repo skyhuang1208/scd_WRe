@@ -1,0 +1,51 @@
+*** PRIMARY SPECTRIUM ***
+
+JNM 2015: Displacement cascades and defects annealing in tungsten
+Part I: Defect database from molecular dynamics simulations
+
+Figure 1(a)
+Frenkel pairs, NF:
+regime 1: 0.4172*(energy/128)^0.74 # CAUTION: Ed= 128 eV
+regime 2: 0.0126*(energy/128)^1.34
+turning point: 341.42
+
+Figure 3(a)
+fraction of V:    6.25498069e-1 - 1.75019305e-4*temp
+fraction of SIA:  0.09020656*(energy/128)^0.32556275
+
+*** DPA RATE ***
+DEMO: 1.88742463e-07 (average result, W_DEMO_FW_transmute.dpa-per-fpy)
+HFIR: 3.25896689e-07 (fitting result, W_HFIR_EOC_transmute.dpa-per-fpy)
+JOYO: 5.33059468e-07 (fitting result, W_JOYO_transmute.dpa-per-fpy) 
+
+*** PKA RATE ***
+DEMO: 5.61E15
+HFIR: 8.41E15
+JOYO: 3.00e15
+
+*** RE RATE ***
+Fitting appm vs dpa with appm= A*dpa^2+B*dpa
+[  90.82803369  521.58147823]
+[ -8442.85384393  34266.83482195]
+[  123.47757496  1056.83167725]
+DEMO:    90.82803369*2*dpa +   521.58147823 appm/dpa
+HFIR: -8442.85384393*2*dpa + 34266.83482195
+JOYO:   123.47757496*2*dpa +  1056.83167725
+
+		* Values using linear fitting (not use anymore)
+		DEMO:   652.60551672 appm/dpa, 1.2326e-08 at%/s
+		HFIR: 21992.84512819 appm/dpa, 7.1723e-07 at%/s
+		JOYO:  1230.72850496 appm/dpa, 6.6284e-08 at%/s
+
+*** Cluster models ***
+no mixed-interstitial explicitly: SIA1Re1 is mixed-interstitial, movable
+other clusters are immovable
+
+** dissociation energy **
+1V1Re: 0.2
+other V-Re clusters: 
+    Ediss(V)=  0.27285227 * nv^-0.30702658 * nr^0.59015479
+    Ediss(Re)= 0.079 + 0.154*nv/nr;
+
+pure Re clusters:
+    Ediss= -0.0258+4.736e-6*nr;
